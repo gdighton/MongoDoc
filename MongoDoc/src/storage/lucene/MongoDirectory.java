@@ -20,6 +20,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.WriteConcern;
 
 public class MongoDirectory extends Directory {
 	private String dirname;
@@ -34,6 +35,7 @@ public class MongoDirectory extends Directory {
 	public MongoDirectory(DB db, String dirname) throws IOException {
 		this.dirname = dirname;
 		fileColl = db.getCollection("lucene." + dirname);
+		fileColl.setWriteConcern(WriteConcern.SAFE);
 		
 		setLockFactory(new MongoLockFactory(db));
 	}

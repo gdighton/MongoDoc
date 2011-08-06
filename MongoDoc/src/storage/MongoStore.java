@@ -19,13 +19,18 @@ public class MongoStore {
 	
 	public MongoStore() {
 		try {
-			mongo = new Mongo("liorna");
+			mongo = new Mongo("dbh23.mongolab.com:27237");
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (MongoException e) {
 			e.printStackTrace();
 		}
-		db = mongo.getDB("MongoDoc");
+		db = mongo.getDB("mongodoc");
+		System.out.println("Authenticating...");
+		if (!db.authenticate("gdighton", new String("3400doc").toCharArray())) {
+			throw new RuntimeException("Could not authenticate!");
+		}
+		System.out.println("Authenticated");
 	}
 	
 	public DB getDB() { return db; }

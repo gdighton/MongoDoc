@@ -1,7 +1,5 @@
 package tests;
-/**
- * A simple example of an in-memory search using Lucene.
- */
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,6 +17,7 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
+import com.mongodb.DB;
 import com.mongodb.Mongo;
 
 import storage.lucene.MongoDirectory;
@@ -26,11 +25,13 @@ import storage.lucene.MongoDirectory;
 public class FSLuceneTest {
 
     public static void main(String[] args) throws IOException {
-    	Mongo mongo = new Mongo("liorna");
+    	Mongo mongo = new Mongo("dbh23.mongolab.com:27237");
+    	DB db = mongo.getDB("mongodoc");
+		db.authenticate("gdighton", new String("3400doc").toCharArray());
 
     	long startTime = System.currentTimeMillis();
         try {
-            MongoDirectory idx = new MongoDirectory(mongo.getDB("LuceneTest"), "FSTest");
+            MongoDirectory idx = new MongoDirectory(db, "FSTest");
             IndexWriter writer = idx.openIndexWriter();
         	
         	/*
@@ -45,6 +46,7 @@ public class FSLuceneTest {
             	FileReader reader = new FileReader(f);
             	System.out.println("Indexing: " + f.getName());
             	writer.addDocument(createDocument(f.getName(), reader));
+            	writer.commit();
             }
 
 
@@ -52,7 +54,7 @@ public class FSLuceneTest {
             long startOptimize = System.currentTimeMillis();
             System.out.println("Indexing Time: " + (startOptimize - startTime));
 
-            writer.optimize();
+            writer.optimize(3);
             writer.close();
             System.out.println("Close Time: " + (System.currentTimeMillis() - startOptimize));
             

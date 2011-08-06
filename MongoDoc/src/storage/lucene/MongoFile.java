@@ -5,7 +5,6 @@ import java.util.List;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import com.mongodb.WriteConcern;
 
 public class MongoFile {
 	protected MongoDirectory directory;
@@ -31,7 +30,7 @@ public class MongoFile {
 			doc.put("sizeInBytes", 0L);
 			doc.put("numBuffers", 0);
 			doc.put("chunks", new Object[0]);
-			files.insert(doc, WriteConcern.SAFE);
+			files.insert(doc);
 			return;
 		}
 	}
@@ -53,7 +52,7 @@ public class MongoFile {
 	protected synchronized void setLength (long length) {
 		DBObject lengthField = new BasicDBObject("length", length);
 		DBObject setter = new BasicDBObject("$set", lengthField);
-		directory.getCollection().update(idQuery, setter, false, false, WriteConcern.SAFE);
+		directory.getCollection().update(idQuery, setter);
 	}
 	
 	public synchronized long getLastModified() { 
@@ -63,7 +62,7 @@ public class MongoFile {
 	protected synchronized void setLastModified(long lastModified) {
 		DBObject lastModifiedField = new BasicDBObject("lastModified", lastModified);
 		DBObject setter = new BasicDBObject("$set", lastModifiedField);
-		directory.getCollection().update(idQuery, setter, false, false, WriteConcern.SAFE);
+		directory.getCollection().update(idQuery, setter);
 	}
 	
 	protected byte[] addBuffer(int size) {
@@ -76,7 +75,7 @@ public class MongoFile {
 			DBObject chunkField = new BasicDBObject("chunks", buffer);
 			setter.put("$push", chunkField);
 			
-			directory.getCollection().update(idQuery, setter, false, false, WriteConcern.SAFE);
+			directory.getCollection().update(idQuery, setter);
 		}
 		return buffer;
 	}
@@ -119,6 +118,6 @@ public class MongoFile {
 		BasicDBObject chunk = new BasicDBObject();
 		chunk.put("chunks." + index, data);
 		DBObject setter = new BasicDBObject("$set", chunk);
-		files.update(idQuery, setter, false, false, WriteConcern.SAFE);
+		files.update(idQuery, setter);
 	}
 }
