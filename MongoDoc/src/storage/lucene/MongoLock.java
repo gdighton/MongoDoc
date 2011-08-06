@@ -42,7 +42,7 @@ public class MongoLock extends Lock {
 		MongoStore store = new MongoStore();
 		DB db = store.getDB();
 		DBCollection lockCollection = db.getCollection("lucenelocks");
-		MongoLockFactory factory = new MongoLockFactory(db);
+		MongoLockFactory factory = new MongoLockFactory(db, "test");
 		Lock lock = factory.makeLock("test");
 		lock.obtain();
 		System.out.println("After Locking");

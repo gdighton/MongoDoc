@@ -48,20 +48,22 @@ public class MongoLockFactory extends LockFactory {
 	}
 	
 	DB db;
+	String prefix;
 	
-	MongoLockFactory(DB db) {
+	MongoLockFactory(DB db, String prefix) {
 		this.db = db;
+		this.prefix = prefix +"/";
 		initializeJS(db);
 	}
 
 	@Override
 	public Lock makeLock(String lockName) {
-		return new MongoLock(lockName, db);
+		return new MongoLock(prefix + lockName, db);
 	}
 
 	@Override
 	public void clearLock(String lockName) throws IOException {
-		db.eval("releaseLock(" + lockName + ");", new Object[0]);
+		db.eval("releaseLock(" + prefix + lockName + ");", new Object[0]);
 	}
 
 }

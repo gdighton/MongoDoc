@@ -37,7 +37,7 @@ public class MongoDirectory extends Directory {
 		fileColl = db.getCollection("lucene." + dirname);
 		fileColl.setWriteConcern(WriteConcern.SAFE);
 		
-		setLockFactory(new MongoLockFactory(db));
+		setLockFactory(new MongoLockFactory(db, this.dirname));
 	}
 
 	@Override
